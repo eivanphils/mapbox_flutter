@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mapbox_flutter/screens/full_map_screen.dart';
 
 void main() => runApp(const MyApp());
 
@@ -7,16 +8,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'MapBox',
       home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Material App Bar'),
-        ),
-        body: const Center(
-          child: Text('Hello World'),
-        ),
+        body: FullMapScreen(),
       ),
     );
   }
