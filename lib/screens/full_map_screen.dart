@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_map_animations/flutter_map_animations.dart';
 import 'package:latlong2/latlong.dart';
 
 class FullMapScreen extends StatefulWidget {
@@ -13,10 +14,16 @@ class FullMapScreen extends StatefulWidget {
   State<FullMapScreen> createState() => _FullMapScreenState();
 }
 
-class _FullMapScreenState extends State<FullMapScreen> {
-  MapController mapController = MapController();
+class _FullMapScreenState extends State<FullMapScreen>
+    with TickerProviderStateMixin {
+  // MapController mapController = MapController();
 
   final center = const LatLng(-33.479720, -70.599370);
+  late final _animatedMapController = AnimatedMapController(
+    vsync: this,
+    duration: const Duration(milliseconds: 500),
+    curve: Curves.easeInOut,
+  );
 
   String selectedStyle = 'mapbox/light-v11';
   final String darkStyle = 'mapbox/dark-v11';
@@ -28,26 +35,32 @@ class _FullMapScreenState extends State<FullMapScreen> {
       body: _CreateMapbox(
         center: center,
         selectedStyle: selectedStyle,
-        mapController: mapController,
+        mapController: _animatedMapController.mapController,
       ),
       floatingActionButton:
           Column(mainAxisAlignment: MainAxisAlignment.end, children: [
         FloatingActionButton(
           onPressed: () {
-            mapController.move(
-                mapController.camera.center, mapController.camera.zoom + 1);
+            _animatedMapController.animatedZoomIn();
+            // mapController.move(
+            //     mapController.camera.center, mapController.camera.zoom + 1);
           },
           child: const Icon(Icons.zoom_in),
         ),
-        const SizedBox(height: 5,),
+        const SizedBox(
+          height: 5,
+        ),
         FloatingActionButton(
           onPressed: () {
-            mapController.move(
-                mapController.camera.center, mapController.camera.zoom - 1);
+            _animatedMapController.animatedZoomOut();
+            // mapController.move(
+            //     mapController.camera.center, mapController.camera.zoom - 1);
           },
           child: const Icon(Icons.zoom_out),
         ),
-        const SizedBox(height: 5,),
+        const SizedBox(
+          height: 5,
+        ),
         FloatingActionButton(
             onPressed: () {
               selectedStyle =
@@ -89,16 +102,11 @@ class _CreateMapbox extends StatelessWidget {
           MarkerLayer(markers: [
             Marker(
                 point: center,
-                child: Container(
-                    height: 50,
-                    width: 50,
-                    decoration: BoxDecoration(
-                        color: Colors.cyanAccent,
-                        borderRadius: BorderRadius.circular(30)),
-                    child: const Icon(
-                      Icons.abc,
-                      size: 30,
-                    )))
+                child: const Icon(
+                  Icons.place,
+                  size: 50,
+                  color: Colors.deepPurpleAccent,
+                ))
           ])
         ]);
   }
