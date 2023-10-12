@@ -14,6 +14,8 @@ class FullMapScreen extends StatefulWidget {
 }
 
 class _FullMapScreenState extends State<FullMapScreen> {
+  MapController mapController = MapController();
+
   final center = const LatLng(-33.479720, -70.599370);
 
   String selectedStyle = 'mapbox/light-v11';
@@ -23,9 +25,29 @@ class _FullMapScreenState extends State<FullMapScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _CreateMapbox(center: center, selectedStyle: selectedStyle),
+      body: _CreateMapbox(
+        center: center,
+        selectedStyle: selectedStyle,
+        mapController: mapController,
+      ),
       floatingActionButton:
           Column(mainAxisAlignment: MainAxisAlignment.end, children: [
+        FloatingActionButton(
+          onPressed: () {
+            mapController.move(
+                mapController.camera.center, mapController.camera.zoom + 1);
+          },
+          child: const Icon(Icons.zoom_in),
+        ),
+        const SizedBox(height: 5,),
+        FloatingActionButton(
+          onPressed: () {
+            mapController.move(
+                mapController.camera.center, mapController.camera.zoom - 1);
+          },
+          child: const Icon(Icons.zoom_out),
+        ),
+        const SizedBox(height: 5,),
         FloatingActionButton(
             onPressed: () {
               selectedStyle =
@@ -39,18 +61,20 @@ class _FullMapScreenState extends State<FullMapScreen> {
 }
 
 class _CreateMapbox extends StatelessWidget {
-  const _CreateMapbox({
-    super.key,
-    required this.center,
-    required this.selectedStyle,
-  });
+  const _CreateMapbox(
+      {super.key,
+      required this.center,
+      required this.selectedStyle,
+      required this.mapController});
 
   final LatLng center;
   final String selectedStyle;
+  final MapController mapController;
 
   @override
   Widget build(BuildContext context) {
     return FlutterMap(
+        mapController: mapController,
         options: MapOptions(
             initialCenter: center, minZoom: 5, maxZoom: 25, initialZoom: 18),
         children: [
